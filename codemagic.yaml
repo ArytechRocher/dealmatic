@@ -1,0 +1,54 @@
+
+workflows:
+  flutter-default:
+    name: Flutter Default (Android & Web)
+    max_build_duration: 60
+    environment:
+      flutter: stable
+      xcode: default
+      vars:
+        BUILD_MODE: release
+    scripts:
+      - name: Install dependencies
+        script: |
+          flutter pub get
+
+      - name: Analyze
+        script: |
+          flutter analyze
+
+      - name: Run tests
+        script: |
+          flutter test --no-colors
+
+      - name: Build Android AAB
+        script: |
+          flutter build appbundle --$BUILD_MODE
+
+      - name: Build Web (optional)
+        script: |
+          flutter build web --$BUILD_MODE
+
+    artifacts:
+      - build/app/outputs/bundle/release/*.aab
+      - build/web/**
+
+  ios:
+    name: iOS Build
+    max_build_duration: 60
+    environment:
+      flutter: stable
+      xcode: latest
+      vars:
+        BUILD_MODE: release
+    scripts:
+      - flutter pub get
+      - flutter build ipa --export-method ad-hoc --$BUILD_MODE
+    artifacts:
+      - build/ios/ipa/*.ipa
+
+# Notes:
+# - Ajustez les runners/instances si nécessaire (Codemagic UI).
+# - Pour la signature Android/iOS, configurez les variables d'environnement sécurisées
+#   (keystore, provisioning profiles, certificats) depuis l'interface Codemagic.
+
