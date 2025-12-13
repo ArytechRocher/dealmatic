@@ -18,7 +18,7 @@ workflows:
 
       - name: Run tests
         script: |
-          flutter test --no-colors
+          flutter test --no-color
 
       - name: Build Android AAB
         script: |
